@@ -1,0 +1,61 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+  FINDER
+}
+
+model User {
+  userId    String   @id() @default(uuid()) @map("user_id")
+  name      String
+  role      Role     @default(FINDER)
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  band      Band[]
+}
+
+model Member {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  office    String
+  avatar    String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  band       Band   @relation(fields: [bandRoleId], references: [bandId])
+  bandRoleId String @map("band_role_id")
+
+  @@map("members")
+}
+
+model Band {
+  bandId      String   @id @default(uuid())
+  bandName    String   @map("band_name")
+  style       String
+  description String
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  user        User     @relation(fields: [userAdminId], references: [userId])
+  userAdminId String   @map("user_admin_id")
+  member      Member[]
+
+  @@map("bands")
+}
