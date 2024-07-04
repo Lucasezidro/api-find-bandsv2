@@ -13,6 +13,12 @@ export class PrismaBandRepository implements BandsRepository {
     return bands
   }
 
+  async listBands() {
+    const bands = await prisma.band.findMany()
+
+    return bands
+  }
+
   async create(data: Prisma.BandUncheckedCreateInput) {
     const band = await prisma.band.create({
       data,
@@ -22,9 +28,19 @@ export class PrismaBandRepository implements BandsRepository {
   }
 
   async getBandById(bandId: string) {
-    const band = await prisma.band.findUnique({
+    const band = await prisma.band.findFirst({
       where: {
         bandId,
+      },
+      select: {
+        bandId: true,
+        bandName: true,
+        createdAt: true,
+        description: true,
+        userAdminId: true,
+        style: true,
+        updatedAt: true,
+        member: true,
       },
     })
 

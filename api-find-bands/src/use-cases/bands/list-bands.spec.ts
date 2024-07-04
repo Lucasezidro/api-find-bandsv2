@@ -2,22 +2,22 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { InMemoryUserRepository } from '@/repositories/in-memory/in-memory-user-repository'
 import { hash } from 'bcryptjs'
 import { InMemoryBandRepository } from '@/repositories/in-memory/in-memory-bands-repository'
-import { GetBandsUseCase } from './get-bands'
+import { ListBandsUseCase } from './list-bands'
 
 let inMemoryBandsRepository: InMemoryBandRepository
 let inMemoryUserRepository: InMemoryUserRepository
 
-let sut: GetBandsUseCase
+let sut: ListBandsUseCase
 
-describe('Get Bands by User id', () => {
+describe('List Bands', () => {
   beforeEach(() => {
     inMemoryUserRepository = new InMemoryUserRepository()
 
     inMemoryBandsRepository = new InMemoryBandRepository()
-    sut = new GetBandsUseCase(inMemoryBandsRepository)
+    sut = new ListBandsUseCase(inMemoryBandsRepository)
   })
 
-  it('should be able to get bands by user id', async () => {
+  it('should be able to list bands', async () => {
     const user = await inMemoryUserRepository.create({
       name: 'John Doe',
       email: 'johndoe@exemple.com',
@@ -31,10 +31,21 @@ describe('Get Bands by User id', () => {
       userAdminId: user.userId,
     })
 
-    const { bands } = await sut.execute({
-      userAdminId: user.userId,
+    const user2 = await inMemoryUserRepository.create({
+      name: 'John Doe',
+      email: 'johndoe@exemple.com',
+      password: await hash('123456', 6),
     })
 
-    expect(bands).toHaveLength(1)
+    await inMemoryBandsRepository.create({
+      bandName: 'new band 2',
+      description: 'lorem ipsum dolors',
+      style: 'Jazz',
+      userAdminId: user2.userId,
+    })
+
+    const { bands } = await sut.execute()
+
+    expect(bands).toHaveLength(2)
   })
 })

@@ -10,6 +10,12 @@ export class InMemoryBandRepository implements BandsRepository {
     return bands
   }
 
+  async listBands() {
+    const bands = this.items
+
+    return bands
+  }
+
   async create(data: Prisma.BandUncheckedCreateInput) {
     const band = {
       bandId: 'band-01',
@@ -17,7 +23,6 @@ export class InMemoryBandRepository implements BandsRepository {
       style: data.style,
       description: data.description,
       userAdminId: data.userAdminId,
-      member: data.member,
       createdAt: new Date(),
       updatedAt: new Date(),
     }
