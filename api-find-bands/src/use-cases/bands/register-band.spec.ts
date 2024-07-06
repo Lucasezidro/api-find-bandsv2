@@ -14,7 +14,10 @@ describe('Register Band', () => {
     inMemoryUserRepository = new InMemoryUserRepository()
 
     inMemoryBandsRepository = new InMemoryBandRepository()
-    sut = new RegisterBandUseCase(inMemoryBandsRepository)
+    sut = new RegisterBandUseCase(
+      inMemoryBandsRepository,
+      inMemoryUserRepository,
+    )
   })
 
   it('should be able to register a band', async () => {
@@ -29,14 +32,30 @@ describe('Register Band', () => {
       description: 'lorem ipsum dolor',
       style: 'rock',
       userAdminId: user.userId,
-      member: {
-        email: 'newmember@email.com',
-        name: 'New member',
-        office: 'guitarrista',
-        avatar: '',
-      },
     })
 
     expect(newBand.bandId).toEqual(expect.any(String))
+  })
+
+  it('should be able to change user role when register a new band', async () => {
+    const user = await inMemoryUserRepository.create({
+      name: 'John Doe',
+      email: 'johndoe@exemple.com',
+      password: await hash('123456', 6),
+    })
+
+    await sut.execute({
+      bandName: 'new band',
+      description: 'lorem ipsum dolor',
+      style: 'rock',
+      userAdminId: user.userId,
+    })
+
+    const updatedUser = await inMemoryUserRepository.save({
+      ...user,
+      role: 'ADMIN',
+    })
+
+    expect(updatedUser.role).toEqual('ADMIN')
   })
 })

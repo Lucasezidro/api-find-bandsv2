@@ -31,10 +31,10 @@ export class PrismaMemberRepository implements MembersRepository {
     return newMember
   }
 
-  async delete(id: string) {
+  async delete(member: Member) {
     await prisma.member.delete({
       where: {
-        id,
+        id: member.id,
       },
     })
   }

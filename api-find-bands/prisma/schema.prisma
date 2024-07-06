@@ -34,6 +34,7 @@ model Member {
   id        String   @id @default(uuid())
   name      String
   email     String   @unique
+  role      Role?    @default(MEMBER)
   office    String
   avatar    String?
   createdAt DateTime @default(now()) @map("created_at")

@@ -11,7 +11,7 @@ export async function createMember(
     name: z.string(),
     email: z.string().email(),
     office: z.string(),
-    avatar: z.string(),
+    avatar: z.string().optional(),
     bandRoleId: z.string().uuid(),
   })
 
@@ -23,7 +23,7 @@ export async function createMember(
     await createMember.execute({
       name: data.name,
       email: data.email,
-      avatar: data.avatar,
+      avatar: data.avatar ?? '',
       office: data.office,
       bandRoleId: data.bandRoleId,
     })

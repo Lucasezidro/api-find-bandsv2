@@ -30,6 +30,18 @@ export class InMemoryUserRepository implements UserRepository {
     return user
   }
 
+  async save(user: User) {
+    const userIndex = this.items.findIndex(
+      (item) => item.userId === user.userId,
+    )
+
+    if (userIndex >= 0) {
+      this.items[userIndex] = user
+    }
+
+    return user
+  }
+
   async create(data: Prisma.UserCreateInput) {
     const user = {
       userId: 'user-id-1',

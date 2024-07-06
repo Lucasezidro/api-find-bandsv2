@@ -1,4 +1,6 @@
+import { makeGetUserProfile } from '@/factories/make-get-user-profile'
 import { makeRegisterBand } from '@/factories/make-register-band'
+import { makeUpdateUser } from '@/factories/make-update-user-role'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
 
@@ -7,34 +9,35 @@ export async function registerBandController(
   reply: FastifyReply,
 ) {
   const registerBandBodySchema = z.object({
-    bandname: z.string(),
+    bandName: z.string(),
     style: z.string(),
     description: z.string(),
     userAdminId: z.string().uuid(),
-    member: z.object({
-      name: z.string(),
-      email: z.string().email(),
-      office: z.string(),
-      avatar: z.string().optional(),
-    }),
   })
 
   const bandData = registerBandBodySchema.parse(request.body)
 
   try {
+    const updatedUser = makeUpdateUser()
+    const bandOwner = makeGetUserProfile()
     const registerBand = makeRegisterBand()
 
     await registerBand.execute({
-      bandName: bandData.bandname,
+      bandName: bandData.bandName,
       style: bandData.style,
       description: bandData.description,
       userAdminId: request.user.sub,
-      member: {
-        name: bandData.member.name,
-        email: bandData.member.email,
-        office: bandData.member.office,
-        avatar: bandData.member.avatar ?? '',
-      },
+    })
+
+    const { user } = await bandOwner.execute({
+      userId: request.user.sub,
+    })
+
+    console.log(user)
+
+    await updatedUser.execute({
+      ...user,
+      role: 'ADMIN',
     })
   } catch (err) {
     if (err) {

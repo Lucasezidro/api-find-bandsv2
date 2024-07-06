@@ -4,10 +4,14 @@ import { BandsRepository } from '../bands-repository'
 export class InMemoryBandRepository implements BandsRepository {
   public items: Band[] = []
 
-  async findManyByUserId(userId: string) {
-    const bands = this.items.filter((item) => item.userAdminId === userId)
+  async findBandByUserId(userId: string) {
+    const band = this.items.find((item) => item.userAdminId === userId)
 
-    return bands
+    if (!band) {
+      return null
+    }
+
+    return band
   }
 
   async listBands() {

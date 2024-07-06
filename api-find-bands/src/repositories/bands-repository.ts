@@ -1,7 +1,7 @@
 import { Band, Prisma } from '@prisma/client'
 
 export interface BandsRepository {
-  findManyByUserId(userId: string): Promise<Band[]>
+  findBandByUserId(userId: string): Promise<Band | null>
   create(data: Prisma.BandUncheckedCreateInput): Promise<Band>
   getBandById(bandId: string): Promise<Band | null>
 

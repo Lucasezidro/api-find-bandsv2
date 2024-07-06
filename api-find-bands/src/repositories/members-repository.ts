@@ -5,6 +5,6 @@ export interface MembersRepository {
   findMemberById(id: string): Promise<Member | null>
 
   create(data: Prisma.MemberUncheckedCreateInput): Promise<Member>
-  delete(id: string): Promise<void>
+  delete(member: Member): Promise<void>
   update(member: Member): Promise<Member>
 }

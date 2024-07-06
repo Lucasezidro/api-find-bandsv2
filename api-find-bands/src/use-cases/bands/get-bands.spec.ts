@@ -17,7 +17,7 @@ describe('Get Bands by User id', () => {
     sut = new GetBandsUseCase(inMemoryBandsRepository)
   })
 
-  it('should be able to get bands by user id', async () => {
+  it('should be able to get a band by user id', async () => {
     const user = await inMemoryUserRepository.create({
       name: 'John Doe',
       email: 'johndoe@exemple.com',
@@ -31,10 +31,10 @@ describe('Get Bands by User id', () => {
       userAdminId: user.userId,
     })
 
-    const { bands } = await sut.execute({
+    const { band } = await sut.execute({
       userAdminId: user.userId,
     })
 
-    expect(bands).toHaveLength(1)
+    expect(band.userAdminId).toEqual(user.userId)
   })
 })

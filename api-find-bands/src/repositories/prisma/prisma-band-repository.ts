@@ -3,8 +3,8 @@ import { BandsRepository } from '../bands-repository'
 import { prisma } from '@/lib/prisma'
 
 export class PrismaBandRepository implements BandsRepository {
-  async findManyByUserId(userId: string) {
-    const bands = await prisma.band.findMany({
+  async findBandByUserId(userId: string) {
+    const bands = await prisma.band.findFirst({
       where: {
         userAdminId: userId,
       },

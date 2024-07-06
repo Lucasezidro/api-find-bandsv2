@@ -23,6 +23,7 @@ export class InMemoryMembersRepository implements MembersRepository {
       id: 'member-id',
       name: data.name,
       email: data.email,
+      role: data.role ?? 'FINDER',
       office: data.office,
       avatar: data.avatar ?? '',
       createdAt: new Date(),
@@ -35,8 +36,10 @@ export class InMemoryMembersRepository implements MembersRepository {
     return newMember
   }
 
-  async delete(id: string) {
-    this.items.filter((item) => item.id === id)
+  async delete(member: Member) {
+    const itemIndex = this.items.findIndex((item) => item.id === member.id)
+
+    this.items.splice(itemIndex, 1)
   }
 
   async update(member: Member) {

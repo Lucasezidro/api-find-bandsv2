@@ -1,12 +1,13 @@
 import { Band } from '@prisma/client'
 import { BandsRepository } from '@/repositories/bands-repository'
+import { BadRequestError } from '../errors/bad-request-error'
 
 interface GetBandsUseCaseRequest {
   userAdminId: string
 }
 
 interface GetBandsUseCaseResponse {
-  bands: Band[]
+  band: Band
 }
 
 export class GetBandsUseCase {
@@ -15,8 +16,12 @@ export class GetBandsUseCase {
   async execute({
     userAdminId,
   }: GetBandsUseCaseRequest): Promise<GetBandsUseCaseResponse> {
-    const bands = await this.bandsRepository.findManyByUserId(userAdminId)
+    const band = await this.bandsRepository.findBandByUserId(userAdminId)
 
-    return { bands }
+    if (!band) {
+      throw new BadRequestError('Band not found.')
+    }
+
+    return { band }
   }
 }
