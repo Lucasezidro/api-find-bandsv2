@@ -6,6 +6,7 @@ const prisma = new PrismaClient()
 
 async function seed() {
   await prisma.user.deleteMany()
+  await prisma.band.deleteMany()
 
   const passwordHash = await hash('123456', 6)
 
@@ -42,6 +43,34 @@ async function seed() {
       style: faker.music.genre(),
       userAdminId: user1.userId,
       description: faker.lorem.paragraph(),
+      messages: faker.lorem.paragraph(),
+      favoritCount: 3,
+      appointements: {
+        create: {
+          destination: user1.email,
+          eventDate: faker.date.soon(),
+          status: 'PENDING',
+          description: faker.lorem.paragraph(),
+        },
+      },
+      events: {
+        createMany: {
+          data: [
+            {
+              eventDate: faker.date.past(),
+              location: faker.location.city(),
+              isEventHasPast: true,
+              description: faker.lorem.paragraph(),
+            },
+            {
+              eventDate: faker.date.recent(),
+              location: faker.location.city(),
+              isEventHasPast: false,
+              description: faker.lorem.paragraph(),
+            },
+          ],
+        },
+      },
       member: {
         createMany: {
           data: [
@@ -87,6 +116,45 @@ async function seed() {
       style: faker.music.genre(),
       userAdminId: user2.userId,
       description: faker.lorem.paragraph(),
+      messages: faker.lorem.paragraph(),
+      appointements: {
+        createMany: {
+          data: [
+            {
+              destination: user2.email,
+              eventDate: faker.date.recent(),
+              status: 'APPROVED',
+              description: faker.lorem.paragraph(),
+            },
+            {
+              destination: user2.email,
+              eventDate: faker.date.past(),
+              status: 'REFUSED',
+              refusedReason:
+                'Data indisponivel, agende para outra data por favor!',
+              description: faker.lorem.paragraph(),
+            },
+          ],
+        },
+      },
+      events: {
+        createMany: {
+          data: [
+            {
+              eventDate: faker.date.past(),
+              location: faker.location.city(),
+              isEventHasPast: true,
+              description: faker.lorem.paragraph(),
+            },
+            {
+              eventDate: faker.date.recent(),
+              location: faker.location.city(),
+              isEventHasPast: false,
+              description: faker.lorem.paragraph(),
+            },
+          ],
+        },
+      },
       member: {
         createMany: {
           data: [

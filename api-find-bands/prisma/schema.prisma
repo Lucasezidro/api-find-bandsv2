@@ -47,16 +47,65 @@ model Member {
 }
 
 model Band {
-  bandId      String   @id @default(uuid())
-  bandName    String   @map("band_name")
-  style       String
-  description String
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  bandId        String          @id @default(uuid())
+  bandName      String          @map("band_name")
+  style         String
+  description   String
+  createdAt     DateTime        @default(now()) @map("created_at")
+  isFavorit     Boolean?        @default(false)
+  favoritCount  Int?            @default(0)
+  messages      String?
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+  member        Member[]
+  appointements Appointements[]
+  events        Events[]
 
-  user        User     @relation(fields: [userAdminId], references: [userId])
-  userAdminId String   @map("user_admin_id")
-  member      Member[]
+  user        User   @relation(fields: [userAdminId], references: [userId])
+  userAdminId String @map("user_admin_id")
 
   @@map("bands")
+}
+
+enum AppointmentStatus {
+  PENDING
+  REFUSED
+  APPROVED
+}
+
+model Appointements {
+  id                String            @id @default(uuid())
+  description       String?
+  destination       String
+  eventDate         DateTime          @map("event_date")
+  isEventAccepted   Boolean?          @map("is_event_accepted")
+  status            AppointmentStatus @default(PENDING)
+  refusedReason     String?
+  createdAt         DateTime          @default(now()) @map("created_at")
+  updatedAt         DateTime          @updatedAt @map("updated_at")
+  destinationBandId String            @map("destination_band_id")
+
+  band Band @relation(fields: [destinationBandId], references: [bandId])
+
+  @@map("appointments")
+}
+
+enum EventSize {
+  BIG
+  MEDIUM
+  SMALL
+}
+
+model Events {
+  eventId        String     @id @default(uuid())
+  eventDate      DateTime   @map("event_date")
+  location       String
+  isEventHasPast Boolean?   @map("is_event_has_past")
+  eventImages    String?    @map("event_images")
+  eventSize      EventSize? @default(SMALL)
+  description    String?
+  createdAt      DateTime   @default(now()) @map("created_at")
+  updatedAt      DateTime   @updatedAt @map("updated_at")
+  bandEventId    String     @map("band_event_id")
+
+  band Band @relation(fields: [bandEventId], references: [bandId])
 }

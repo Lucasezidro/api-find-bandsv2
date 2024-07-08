@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client'
+import { Band, Prisma } from '@prisma/client'
 import { BandsRepository } from '../bands-repository'
 import { prisma } from '@/lib/prisma'
 
@@ -27,20 +27,21 @@ export class PrismaBandRepository implements BandsRepository {
     return band
   }
 
+  async update(band: Band) {
+    const updatedBand = await prisma.band.update({
+      where: {
+        bandId: band.bandId,
+      },
+      data: band,
+    })
+
+    return updatedBand
+  }
+
   async getBandById(bandId: string) {
     const band = await prisma.band.findFirst({
       where: {
         bandId,
-      },
-      select: {
-        bandId: true,
-        bandName: true,
-        createdAt: true,
-        description: true,
-        userAdminId: true,
-        style: true,
-        updatedAt: true,
-        member: true,
       },
     })
 

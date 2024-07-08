@@ -5,6 +5,7 @@ import { authRoutes } from './http/auth/routes'
 import { env } from './env'
 import { bandRoutes } from './http/bands/routes'
 import { membersRoutes } from './http/members/routes'
+import { eventRoutes } from './http/events/routes'
 
 export const app = fastify()
 
@@ -17,3 +18,4 @@ app.register(fastifyJwt, {
 app.register(authRoutes)
 app.register(bandRoutes)
 app.register(membersRoutes)
+app.register(eventRoutes)

@@ -26,12 +26,27 @@ export class InMemoryBandRepository implements BandsRepository {
       bandName: data.bandName,
       style: data.style,
       description: data.description,
+      isFavorit: data.isFavorit ?? false,
+      messages: data.messages ?? '',
+      favoritCount: data.favoritCount ?? 0,
       userAdminId: data.userAdminId,
       createdAt: new Date(),
       updatedAt: new Date(),
     }
 
     this.items.push(band)
+
+    return band
+  }
+
+  async update(band: Band) {
+    const bandIndex = this.items.findIndex(
+      (item) => item.bandId === band.bandId,
+    )
+
+    if (bandIndex >= 0) {
+      this.items[bandIndex] = band
+    }
 
     return band
   }
